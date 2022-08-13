@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang = "ja">
+    <head>
+        <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+        <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+        <title>Let's GitHub</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <object data="txttxt.txt" type="text/plain"></object>
+        <py-script>
+            print('start')
+            f = open("txttxt.txt")
+            F = f.readlines()
+            f.close()
+            F = f.split('\n')
+            for i in range(5):
+                print(F[i])
+        </py-script>
+    </body>
+</html>
