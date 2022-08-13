@@ -8,8 +8,11 @@
     </head>
     <body>
         <py-script>
+            f = open("ConstellationList.txt")
+            F = f.readlines()
+            f.close()
             for i in range(5):
-                print(123)
+                print(F[i])
         </py-script>
         <h1>
             いらっしゃいませ
