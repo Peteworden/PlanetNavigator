@@ -14,11 +14,11 @@
     <body>
         <py-script>
             URL = 'https://peteworden.github.io/PlanetNavigator/ConstellationList.txt'
-            !#f = open("ConstellationList.txt")
+            <!-- #f = open("ConstellationList.txt")-->
             F = requests.get(URL).text
             F = F.split('\n')
-            !#F = f.readlines()
-            !#f.close()
+            <!-- !#F = f.readlines()-->
+            <!-- !#f.close()-->
             for i in range(5):
                 print(F[i])
         </py-script>
