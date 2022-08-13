@@ -12,11 +12,12 @@
         <meta charset="UTF-8">
     </head>
     <body>
+        <object data="ConstellationList.txt" type="text/plain"></object>
         <py-script>
             print('start')
             URL = 'https://peteworden.github.io/PlanetNavigator/ConstellationList.txt'
-            f = requests.get(URL).text
-            F = f.split('\n')
+            <!--f = requests.get(URL).text-->
+            F = data.split('\n')
             for i in range(5):
                 print(F[i])
         </py-script>
