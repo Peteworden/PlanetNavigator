@@ -3,14 +3,22 @@
     <head>
         <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
         <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+        <py-env>
+            - numpy
+            - matplotlib
+            - requests
+        </py-env>
         <title>Let's GitHub</title>
         <meta charset="UTF-8">
     </head>
     <body>
         <py-script>
-            f = open("ConstellationList.txt")
-            F = f.readlines()
-            f.close()
+            #f = open("ConstellationList.txt")
+            URL = 'https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=' + name_box.get() + '&full-prec=true&phys-par=true'
+            F = requests.get(URL).text
+            F = F.split('\n')
+            #F = f.readlines()
+            #f.close()
             for i in range(5):
                 print(F[i])
         </py-script>
