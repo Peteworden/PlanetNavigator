@@ -11,13 +11,6 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        /*<object data="ConstellationList.txt" type="text/plain"></object>
-        <py-script>
-            print('start')
-            F = data.split('\n')
-            for i in range(5):
-                print(F[i])
-        </py-script>
         <h1>
             いらっしゃいませ
         </h1>
@@ -31,8 +24,14 @@
         const ctx = canvas.getContext('2d');
         ctx.beginPath();
         ctx.fillRect(0,0,300,300);
+        function calc_Ellipse(JD){
+            var x;
+            x = JD * 100 + 50;
+            return x;
+        }
         for (var i=0; i<3; i++) {
-            ctx.arc( 50+100*i, 50+100*i, 10, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
+            x = calc_Ellipse(i);
+            ctx.arc(x, x, 10, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
         }
         ctx.fillStyle = "rgba(255,0,0,0.8)" ;
         ctx.fill() ;
