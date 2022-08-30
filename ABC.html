@@ -16,8 +16,9 @@
         </h1>
         <p>
             どんどん作っていくよー
-        </p>*/
+        </p>
         <canvas id="canvas" width="600" height="400"></canvas>
+        <input type="file" name="file" id="file" />
     </body>
     <script type="text/javascript">
         const canvas = document.getElementById('canvas');
@@ -34,8 +35,9 @@
             ctx.arc(x, x, 10, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
         }
 
-        var obj1 = document.getElementById("selfile");
-        var file = 'ConstellationList.txt';
+        var obj1 = document.getElementById("file");
+        var file = this.files;
+//'ConstellationList.txt';
         var reader = new FileReader();
         //テキスト形式で読み込む
         reader.readAsText(file[0]);
