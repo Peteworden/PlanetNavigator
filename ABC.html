@@ -19,10 +19,6 @@
         </p>*/
         <canvas id="canvas" width="600" height="400"></canvas>
     </body>
-    <form name="test">
-        <input type="file" id="selfile"><br>
-        <textarea name="txt" rows="10" cols="40" readonly></textarea>
-    </form>
     <script type="text/javascript">
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -39,11 +35,12 @@
         }
 
         var obj1 = document.getElementById("selfile");
-        var file = pass;
+        var file = 'ConstellationList.txt';
         var reader = new FileReader();
         //テキスト形式で読み込む
         reader.readAsText(file[0]);
 
+        /*
         let txt2ary = function(reader) {
         // 1.
             let lines = reader.split(/\r?\n/);
@@ -53,6 +50,17 @@
             console.log( rslt );
 
         };
+        */
+//document.getElementById('file').onchange = function(){
+        reader.onload = function(progressEvent){    
+            var fileContentArray = this.result.split(/\r\n|\n/);
+            for(var line = 0; line < lines.length-1; line++){
+                console.log(line + " --> "+ lines[line]);
+            }
+        };
+        reader.readAsText(file);
+//};
+
 
         ctx.fillStyle = "rgba(255,0,0,0.8)" ;
         ctx.fill() ;
