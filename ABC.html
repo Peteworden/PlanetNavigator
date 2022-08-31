@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang = "ja">
     <head>
-        <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-        <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-        <py-env>
-            - numpy
-            - matplotlib
-        </py-env>
         <title>Let's GitHub</title>
         <meta charset="UTF-8">
     </head>
@@ -18,7 +12,10 @@
             どんどん作っていくよー
         </p>
         <canvas id="canvas" width="600" height="400"></canvas>
-        <input type="file" name="file" id="file" />
+        //<input type="file" name="file" id="file" />
+        <input id="Button_Get" type="button" value="取得" onclick="getData();" />
+        <div>受信情報</div>
+        <div id="output"></div>
     </body>
     <script type="text/javascript">
         const canvas = document.getElementById('canvas');
@@ -35,6 +32,7 @@
             ctx.arc(x, x, 10, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
         }
 
+        /*
         var obj1 = document.getElementById("file");
         var file = this.files;
 //'ConstellationList.txt';
@@ -62,7 +60,7 @@
         };
         reader.readAsText(file);
 //};
-
+*/
 
         ctx.fillStyle = "rgba(255,0,0,0.8)" ;
         ctx.fill() ;
