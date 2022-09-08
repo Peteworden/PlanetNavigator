@@ -1,4 +1,5 @@
-import matplotlib.pyplot as plt                       #2021年8～9月、2022年2～4月
+#2021年8月～　written by @Peteworden31416
+import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import tkinter as tk
