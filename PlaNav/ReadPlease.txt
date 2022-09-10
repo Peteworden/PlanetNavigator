@@ -1,13 +1,37 @@
 とりあえずコードとテキストファイルをここに公開します。
 
 <<<使い方（自分のやり方。ほかにもできる方法はある。Anacondaがいいって見るときあるな、よく知らない）>>>
+
 Pythonをパソコンにインストールする。最新版なら多分大丈夫
+
 IDLEを開く。Windowsなら画面左下のWindowsをクリックしてPythonかIDLEかで検索。デスクトップかツールバーにもってきとくといい
+
 白い正方形の画面が出てくる。Shellというらしい。>>>のところに「print("3+5=" + str(3+5))」と打ってみよう。「3+5=8」と出てくるはず。
+
 File --> Open... で出てくる画面にフォルダを作る。名前は適当
-このPlaNavフォルダ内の、ReadPlease.txt以外のすべてのファイルを上で作ったフォルダに入れる。コピーとかで
+
+フォルダ内に下の9ファイルを作る。打つの面倒なのでコピペをうまく使ってください：
+ConstellationList.txt, ConstellationPositionNew.txt, ExtraPlanet.txt, Lines_light.txt, StarsNew-Tycho-to10.txt, StarsNewHIP_to6_5.txt, TychoSearchHelper.txt,
+boundary_light.txt, supplement_1-3_light.txt
+
+下のURLすべてにアクセスする。これもコピペをうまく使ってください
+txtファイルは上で作ったファイルに中身をコピーする。
+StarsShow.pyはたぶん勝手にダウンロードされるので、上のフォルダ内に移す。
+GitHubを見れるならこのPlaNavフォルダ内のReadPlease.txt以外のすべてのファイルをコピーでもOK。
+https://peteworden.github.io/PlanetNavigator/PlaNav/ConstellationList.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/ConstellationPositionNew.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/ExtraPlanet.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/Lines_light.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/StarsNew-Tycho-to10.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/StarsNewHIP_to6_5.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/TychoSearchHelper.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/boundary_light.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/supplement_1-3_light.txt
+https://peteworden.github.io/PlanetNavigator/PlaNav/StarsShow.py
+
 StarsShow.pyを開く
-ライブラリをインストールする。「Python ライブラリ　インストール」とか調べてみるとやり方が分かると思う（以下でWindowsの場合を書く）。
+
+ライブラリをインストールする。たぶんここが難関。「Python ライブラリ　インストール」とか調べてみるとやり方が分かると思う（以下でWindowsの場合を書く）。
 プログラム冒頭でmatplotlib、numpy、tkinter、math、datetime、time、linecache、requests、jsonとたくさんのライブラリをインポートしているうち、
 どれがインストールしないとだめでどれがしなくて使えるか忘れてしまった、ごめんなさい
 少なくともmatplotlib、numpy、tkinterは必要
@@ -15,9 +39,13 @@ Windowsの場合:
   Windowsマーク-->「cmd」と検索 --> コマンドプロンプトが開く --> 「pip install matplotlib」と入力、Enter --> 何かいろいろ出てきて勝手に終わる。
   最後にsuccessfully installedか何か書いてれば成功。
   ありませんみたいなのでるとスペルミスかインストール不要かのどちらかかな多分
+  matplotlibの部分をtkinterやnumpyに替えてほかもインストールする
+  
 StarsShow.pyに戻り、上のRun --> Run Module で実行する。WindowsならF5でもできる
 インストールしていないライブラリがあるとShellにmatplotlib is not foundのようなエラーが出るので、怖がらずにコマンドプロンプトでインストールする。
+
 エラーなくうまくいけば準備は終わり。楽しんでいただけることを願っています。
+（方法以上）
 
 使ってみたかたはせめてその報告くらいをしていただけるとうれしいです。私が喜びます。
 バグなどあれば、自分で直せる場合でも教えてほしいです。自分の分とこの公開分を修正するので。
