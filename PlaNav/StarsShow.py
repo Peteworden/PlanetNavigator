@@ -113,7 +113,6 @@ def searchW(a): #はじめて赤経がaを超える行数（0始まり）を返�
     return n
     
 def check(event):
-##    t0000 = time.time()
     plt.close()
     ButtonText.set('エラー')
     
@@ -135,21 +134,17 @@ def check(event):
             size = round((mag_0W - stepW*sd[2])**2)
             axW.scatter(sd[0] + a, sd[1], c=starclr, s=size)
 
-    def RAadjustW(RA, piccenRA):
-        if piccenRA >= 360 - rgW and RA <= rgW:
-            return RA + 360        
-        elif piccenRA <= rgW and RA >= 360 - rgW:
-            return RA - 360        
-        else:
-            return RA
-
     def RAadjust(RA, piccenRA):
-        if piccenRA >= 360 - rg and RA <= rg:
-            return RA + 360        
-        elif piccenRA <= rg and RA >= 360 - rg:
-            return RA - 360        
-        else:
-            return RA
+        return piccenRA + (RA - piccenRA + 180) % 360 - 180
+
+    def calc(planet, JD, X, Y, Z):
+        e = planet[2]
+        if e <= 0.99:                                   #0<=e<=0.99 --> Ellipse
+            return cal_Ellipse(planet, JD, X, Y, Z)
+        elif e <= 1.01:                                 #0.99<e<=1.01 --> Parabola
+            return cal_Parabola(planet, JD, X, Y, Z)
+        else:                                           #e>1.01 --> Hyperbola
+            return  cal_Hyperbola(planet, JD, X, Y, Z)
 
     #時刻
     strYear = YearBox.get()
@@ -213,12 +208,7 @@ def check(event):
             Declist.append(Dec_Moon)
             Distlist.append(dist_Moon)
         else:
-            if planet[2] <= 0.99:                                                    #0<=e<=0.99 --> Ellipse
-                x, y, z, alpha, delta, dist = cal_Ellipse(planet, JD, X, Y, Z)
-            elif planet[2] <= 1.01:                                                  #0.99<e<=1.01 --> Parabola
-                x, y, z, alpha, delta, dist = cal_Parabola(planet, JD, X, Y, Z)
-            else:                                                                    #e>1.01 --> Hyperbola
-                x, y, z, alpha, delta, dist = cal_Hyperbola(planet, JD, X, Y, Z)
+            x, y, z, alpha, delta, dist = calc(planet, JD, X, Y, Z)
             Xlist.append(x)
             Ylist.append(y)
             Zlist.append(z)
@@ -233,7 +223,7 @@ def check(event):
     delta_center = Declist[Selected_number]
     dist_center = Distlist[Selected_number]
 
-    piccenRA = alpha_center + float(shift_RA_Box.get())
+    piccenRA = (alpha_center + float(shift_RA_Box.get())) % 360
     piccenDec = delta_center + float(shift_Dec_Box.get())
 
     #赤道座標系、黄道座標系、距離
@@ -301,9 +291,6 @@ def check(event):
             
     boundary.close()
     ConstListFile.close()
-
-##    t0001 = time.time()
-##    print(t0001-t0000)
 
     #ダークモード
     if darkmode.get() == '白地に黒の星':
@@ -396,14 +383,10 @@ def check(event):
         Dec = float(data[1])
         if abs(Dec - piccenDec) < rgW and abs(RAadjust(RA, piccenRA) - piccenRA) < rgW:
             ConstName = ConstList[i].strip()
-            axW.text(RA-360, Dec, ConstName, size=10, c=consttextclr, ha="center", va="center", fontname='MS Gothic')
-            
+            axW.text(RAadjust(RA, piccenRA), Dec, ConstName, size=10, c=consttextclr, ha="center", va="center", fontname='MS Gothic')
         i += 1
     ConstPos.close()
 
-##    t0002 = time.time()
-##    print(t0002-t0001)
-    
     #恒星
     if piccenRA - rgW < 0:
         for i in range(0, searchW(piccenRA + rgW)):
@@ -421,14 +404,10 @@ def check(event):
         for i in range(searchW(piccenRA - rgW), searchW(piccenRA + rgW)):
             DrawStarsW(i, 0)
 
-##    t0003 = time.time()
-##    print(t0003-t0002)
-
     #枠内なら明るさを計算して表示
     Vtext = ''
     for n in range(len(planets)):
-        #↓の2つめは中心が赤経350度だと10度の星が見えないとかを防ぐ
-        if (abs(RAlist[n] - piccenRA) <= rgW or abs(RAlist[n] - piccenRA) >= 360 - rgW) and abs(Declist[n] - piccenDec) <= rgW:
+        if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rgW  and abs(Declist[n] - piccenDec) <= rgW:
             x = Xlist[n]
             y = Ylist[n]
             z = Zlist[n]
@@ -532,8 +511,8 @@ def check(event):
                 Vlist[n] = 10 #n=8（月）を含む
             
             if n == 0:
-                axW.scatter(RAadjustW(RA_Sun, piccenRA), Dec_Sun, c='yellow', s=160)
-                axW.text(RAadjustW(RA_Sun-1, piccenRA), Dec_Sun+1, '太陽', c=textclr, fontname='MS Gothic')
+                axW.scatter(RAadjust(RA_Sun, piccenRA), Dec_Sun, c='yellow', s=160)
+                axW.text(RAadjust(RA_Sun-1, piccenRA), Dec_Sun+1, '太陽', c=textclr, fontname='MS Gothic')
                 
             elif n == 8:
                 rs = RA_Sun * pi/180
@@ -543,19 +522,19 @@ def check(event):
                 lons = Ms + 0.017 * sin(Ms + 0.017 * sin(Ms)) + ws #- 0.0002437 * (JD - 2451545.0) / 365.25
                 k = (1 - cos(lons - lon) * cos(lat)) / 2
                 P = 180 - atan2(cos(ds) * sin(rm - rs), -sin(dm) * cos(ds) * cos(rm - rs) + cos(dm) * sin(ds)) * 180/pi
-                cirW = patches.Circle((RAadjustW(RA_Moon, piccenRA), Dec_Moon), 1.5, fc='#ffff33')
+                cirW = patches.Circle((RAadjust(RA_Moon, piccenRA), Dec_Moon), 1.5, fc='#ffff33')
                 axW.add_patch(cirW)
                 if k < 0.5:
-                    eliW = patches.Ellipse((RAadjustW(RA_Moon, piccenRA), Dec_Moon), 3, 3*(1-2*k), angle=-P, fc='0.3')
+                    eliW = patches.Ellipse((RAadjust(RA_Moon, piccenRA), Dec_Moon), 3, 3*(1-2*k), angle=-P, fc='0.3')
                     axW.add_patch(eliW)
-                    halfW = patches.Wedge((RAadjustW(RA_Moon, piccenRA), Dec_Moon), 1.5, theta1=-P, theta2=-P+180, fc='0.3')
+                    halfW = patches.Wedge((RAadjust(RA_Moon, piccenRA), Dec_Moon), 1.5, theta1=-P, theta2=-P+180, fc='0.3')
                     axW.add_patch(halfW)
                 else:
-                    halfW = patches.Wedge((RAadjustW(RA_Moon, piccenRA), Dec_Moon), 1.5, theta1=-P, theta2=-P+180, fc='0.3')
+                    halfW = patches.Wedge((RAadjust(RA_Moon, piccenRA), Dec_Moon), 1.5, theta1=-P, theta2=-P+180, fc='0.3')
                     axW.add_patch(halfW)
-                    eliW = patches.Ellipse((RAadjustW(RA_Moon, piccenRA), Dec_Moon), 3, 3*(1-2*k), angle=-P, fc='#ffff33')
+                    eliW = patches.Ellipse((RAadjust(RA_Moon, piccenRA), Dec_Moon), 3, 3*(1-2*k), angle=-P, fc='#ffff33')
                     axW.add_patch(eliW)
-                axW.text(RAadjustW(RA_Moon-1, piccenRA), Dec_Moon+1, '月', c=textclr, fontname='MS Gothic')
+                axW.text(RAadjust(RA_Moon-1, piccenRA), Dec_Moon+1, '月', c=textclr, fontname='MS Gothic')
                 
             else:
                 if mag_0W - stepW * Vlist[n] < 1:   #サイズ
@@ -563,49 +542,25 @@ def check(event):
                 else:
                     size = round((mag_0W - stepW*Vlist[n])**2)
 
-                axW.scatter(RAadjustW(RAlist[n], piccenRA), Declist[n], c='red', s=size) #天体をプロット
-                axW.text(RAadjustW(RAlist[n], piccenRA), Declist[n], JPNplanets[n], c=textclr, fontname='MS Gothic')
+                axW.scatter(RAadjust(RAlist[n], piccenRA), Declist[n], c='red', s=size) #天体をプロット
+                axW.text(RAadjust(RAlist[n], piccenRA), Declist[n], JPNplanets[n], c=textclr, fontname='MS Gothic')
 
     if Val3.get() and Selected_number != 0 and Selected_number != 8:
         planet = planets[Selected_number]
-        if planet[2] <= 0.99:
-            for iv in np.arange(float(moveW_on_Box1.get()), float(moveW_on_Box2.get())+0.001, float(moveW_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Ellipse(planet, JD+iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
+        for iv in np.arange(float(moveW_on_Box1.get()), float(moveW_on_Box2.get())+0.001, float(moveW_on_Box1.get())):
+            X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
+            x, y, z, RA, Dec, dist = calc(planet, JD+iv, X, Y, Z)
+            axW.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
 
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Ellipse(planet, JD-iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-        elif planet[2] <= 1.01:
-            for iv in np.arange(float(moveW_on_Box1.get()), float(moveW_on_Box2.get())+0.001, float(moveW_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Parabola(planet, JD+iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Parabola(planet, JD-iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-        else:
-            for iv in np.arange(float(moveW_on_Box1.get()), float(moveW_on_Box2.get())+0.001, float(moveW_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Hyperbola(planet, JD+iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Hyperbola(planet, JD-iv, X, Y, Z)
-                axW.scatter(RAadjustW(RA, piccenRA), Dec, c='#00FF00', s=1)
+            X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
+            x, y, z, RA, Dec, dist = calc(planet, JD-iv, X, Y, Z)
+            axW.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
 
     #狭い方の枠
     axW.plot([piccenRA + rg, piccenRA + rg], [piccenDec + rg, piccenDec - rg], c=frameclr, lw=1)
     axW.plot([piccenRA + rg, piccenRA - rg], [piccenDec - rg, piccenDec - rg], c=frameclr, lw=1)
     axW.plot([piccenRA - rg, piccenRA - rg], [piccenDec - rg, piccenDec + rg], c=frameclr, lw=1)
     axW.plot([piccenRA - rg, piccenRA + rg], [piccenDec + rg, piccenDec + rg], c=frameclr, lw=1)
-
-##    t0004 = time.time()
-##    print(t0004-t0003)
 
     #狭い方
     ax = fig.add_subplot(122, aspect=1)
@@ -665,13 +620,13 @@ def check(event):
             
     for n in range(len(planets)):
         if n == 0:
-            if (abs(RA_Sun - piccenRA) <= rg or abs(RA_Sun - piccenRA) >= 360 - rg) and abs(Dec_Sun - piccenDec) <= rg:
+            if abs(RAadjust(RA_Sun, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Sun - piccenDec) <= rgW:
                 R = 0.267 / Distlist[0]
                 SUNcir = patches.Circle((RAadjust(RA_Sun, piccenRA), Dec_Sun), R, fc='yellow')
                 ax.add_patch(SUNcir)
                 ax.text(RAadjust(RA_Sun-0.2, piccenRA), Dec_Sun+0.2, '太陽', c=textclr, fontname='MS Gothic')
         elif n == 8:
-            if (abs(RA_Moon - piccenRA) <= rg or abs(RA_Moon - piccenRA) >= 360 - rg) and abs(Dec_Moon - piccenDec) <= rg:
+            if abs(RAadjust(RA_Moon, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Moon - piccenDec) <= rgW:
                 r = 0.259 / (dist_Moon / 384400)
                 cir = patches.Circle((RAadjust(RA_Moon, piccenRA), Dec_Moon), r, fc='#ffff33')
                 ax.add_patch(cir)
@@ -687,7 +642,7 @@ def check(event):
                     ax.add_patch(eli)
                 ax.text(RAadjust(RA_Moon-0.2, piccenRA), Dec_Moon+0.2, '月', c=textclr, fontname='MS Gothic')
         else:
-            if (abs(RAlist[n] - piccenRA) <= rg or abs(RAlist[n] - piccenRA) >= 360 - rg) and abs(Declist[n] - piccenDec) <= rg:
+            if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rgW  and abs(Declist[n] - piccenDec) <= rgW:
                 if mag_0 - step*Vlist[n] < 1:   #サイズ
                     size = 1
                 else:
@@ -697,35 +652,14 @@ def check(event):
 
     if Val3.get() and Selected_number != 0 and Selected_number != 8:
         planet = planets[Selected_number]
-        if planet[2] <= 0.99:
-            for iv in np.arange(float(move_on_Box1.get()), float(move_on_Box2.get())+0.001, float(move_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Ellipse(planet, JD+iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
+        for iv in np.arange(float(move_on_Box1.get()), float(move_on_Box2.get())+0.001, float(move_on_Box1.get())):
+            X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
+            x, y, z, RA, Dec, dist = calc(planet, JD+iv, X, Y, Z)
+            ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
 
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Ellipse(planet, JD-iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-        elif planet[2] <= 1.01:
-            for iv in np.arange(float(move_on_Box1.get()), float(move_on_Box2.get())+0.001, float(move_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Parabola(planet, JD+iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Parabola(planet, JD-iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-        else:
-            for iv in np.arange(float(move_on_Box1.get()), float(move_on_Box2.get())+0.001, float(move_on_Box1.get())):
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Hyperbola(planet, JD+iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
-
-                X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
-                x, y, z, RA, Dec, dist = cal_Hyperbola(planet, JD-iv, X, Y, Z)
-                ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
+            X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
+            x, y, z, RA, Dec, dist = calc(planet, JD-iv, X, Y, Z)
+            ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
                 
     text = time_str + '\n\n' + Name + '\n\n' + alpha_str + delta_str + '    (J2000.0)\n\n' + dist_str + '\n\n' + Const + '座' + Vtext + Astr + hstr
     if screenblack == 0:
@@ -746,9 +680,6 @@ def check(event):
         filename = strYear.zfill(4) + strMonth.zfill(2) + strDay.zfill(2) + strHour + Name.replace(' ', '').replace('/', '') + ".png"
         fig.savefig(filename)
         
-##    t0005 = time.time()
-##    print(t0005-t0004)
-
 def addplanetsheet(event):
     def addplanet(event):
         global combobox, comboText
