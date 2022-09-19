@@ -12,7 +12,7 @@
             <p>2. IDLEを開く。Windowsなら画面左下のWindowsをクリックしてPythonかIDLEかで検索。デスクトップかツールバーにもってきとくといい</p>
             <p>3. 白い正方形の画面が出てくる。Shellというらしい。>>>のところに「print("3+5=" + str(3+5))」と打ってみよう。「3+5=8」と出てくるはず。</p>
             <p>4. File --> Open... で出てくる画面にフォルダを作る。名前は適当</p>
-            <p>5.フォルダ内に下の9ファイルを作る。打つの面倒なのでコピペをうまく使ってください：<br>
+            <p>5.フォルダ内に下の9ファイル（空）を作る。打つの面倒なのでコピペをうまく使ってください：<br>
                 ConstellationList.txt<br>
                 ConstellationPositionNew.txt<br>
                 ExtraPlanet.txt<br>
@@ -37,18 +37,16 @@
 
             <p>7. StarsShow.pyを開く</p>
             <p>8. ライブラリをインストールする。たぶんここが難関。「Python ライブラリ　インストール」とか調べてみるとやり方が分かると思う（以下でWindowsの場合を書く）。<br>
-                プログラム冒頭でmatplotlib、numpy、tkinter、math、datetime、time、linecache、requests、jsonとたくさんのライブラリをインポートしているうち、どれがインストールしないとだめでどれがしなくて使えるか忘れてしまった、ごめんなさい<br>
-                少なくともmatplotlib、numpy、tkinterは必要</p>
+                おそらくインストール必要なのはmatplotlib、numpy、datetime、requests、jsonです
+            </p>
             <p>Windowsの場合:<br>
                 (1) Windowsキーを押す<br>
                 (2) 検索窓で「cmd」と検索<br>
                 (3) コマンドプロンプトが開く<br>
                 (4) 「pip install matplotlib」と入力、Enter<br>
-                <img src="pipinstallnumpy.png" alt="" title="numpy、numpy！" width="40%" height="40%">
-                (5) 何かいろいろ出てきて勝手に終わる。エラーが出たとき（例えば「No such file or directory」）は1.でチェックを忘れていた可能性があります。面倒だけどPythonの再インストールをおすすめします<br>
-                (6) 最後にsuccessfully installedか何か書いてれば成功。<br>
-                (7) ありませんみたいなのでるとスペルミスかインストール不要かのどちらかかな多分<br>
-                (8) matplotlibの部分をtkinterやnumpyに替えてほかもインストールする</p>
+                (5) 何かいろいろ出てきて勝手に終わる。最後にSuccessfully installedって書いてれば成功。ありませんみたいなエラーは、インストール不要（mathとかはいらない）か、スペルミスか、1.でチェックを忘れていたかだと思います。3つめなら面倒だけどPythonの再インストールをおすすめします<br>
+                <img src="pipinstallnumpy.png" alt="" title="numpy、numpy！" width="40%" height="40%"><br>
+                (6) matplotlibの部分をtkinterやnumpyに替えてほかもインストールする</p>
   
             <p>9. StarsShow.pyに戻り、上のRun --> Run Module で実行する。WindowsならF5でもできる。インストールしていないライブラリがあるとShellにmatplotlib is not foundのようなエラーが出るので、怖がらずにコマンドプロンプトでインストールする。</p>
 
