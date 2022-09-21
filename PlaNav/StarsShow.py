@@ -7,7 +7,7 @@ import numpy as np
 import tkinter as tk
 import tkinter.messagebox as mb
 import tkinter.ttk as ttk
-from math import floor, sin, cos, tan, pi, log10, atan, atan2, asin, acos, exp, log
+from math import floor, sin, cos, tan, pi, log10, atan, atan2, asin, acos, exp, log, sqrt
 import datetime
 import time
 import linecache
@@ -419,7 +419,7 @@ def check(event):
             elif n == 1: #Marcury
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 V = -0.613 + 0.06328*i - 0.0016336 * i**2 + 0.000033644 * i**3 - 3.4565*10**(-7) * i**4 +1.6893*10**(-9) * i**5 - 3.0334*10**(-12) * i**6+ 5 * log10(dist * PS_2**0.5)
                 Vlist[1] = V
                 if Selected_number == 1:
@@ -427,7 +427,7 @@ def check(event):
             elif n == 2: #Venus
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i <= 163.7:
                     V = -4.384 - 0.001044 * i + 0.0003687 * i**2 - 2.814*10**(-6) * i**3 + 8.938*10**(-9) * i**4 + 5 * log10(dist * PS_2**0.5)
                 else:
@@ -451,22 +451,22 @@ def check(event):
             elif n == 4: #Jupiter
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i <= 12:
-                    V = -9.395 - 0.00037 * i + 0.000616 * i**2 + 5 * log10(dist * PS_2**0.5)
+                    V = -9.395 - 0.00037 * i + 0.000616 * i**2 + 5 * log10(dist * sqrt(PS_2))
                 else:
-                    V = -9.395 - 0.033 - 2.5*log10(1 - 1.507*(i/180) - 0.363*(i/180)**2 - 0.062*(i/180)**3 + 2.809*(i/180)**4 - 1.876*(i/180)**5) + 5 * log10(dist * PS_2**0.5)
+                    V = -9.395 - 0.033 - 2.5*log10(1 - 1.507*(i/180) - 0.363*(i/180)**2 - 0.062*(i/180)**3 + 2.809*(i/180)**4 - 1.876*(i/180)**5) + 5 * log10(dist * sqrt(PS_2))
                 if Selected_number == 4:
                     Vtext = '\n\n' + str(round(V,1)) + ' 等'
                 Vlist[4] = V
             elif n == 5: #Saturn
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i <= 6.5:
-                    V = -8.914 + 1.825*sin(15*pi/180) + 0.026 * i - 0.378*sin(15*pi/180) + exp(-2.25*i) + 5 * log10(dist * PS_2**0.5) #勝手にリングの傾きβ=15°とした
+                    V = -8.914 + 1.825*sin(15*pi/180) + 0.026 * i - 0.378*sin(15*pi/180) + exp(-2.25*i) + 5 * log10(dist * sqrt(PS_2)) #勝手にリングの傾きβ=15°とした
                 elif 6 < i < 150:
-                    V = -8.914 + 0.026 + 0.0002446 * i + 0.0002672 * i**2 - 1.505*10**(-6) * i**3 + 4.767*10**(-9) * i**4 + 5 * log10(dist * PS_2**0.5)
+                    V = -8.914 + 0.026 + 0.0002446 * i + 0.0002672 * i**2 - 1.505*10**(-6) * i**3 + 4.767*10**(-9) * i**4 + 5 * log10(dist * sqrt(PS_2))
                 else:
                     V = 0.6
                 if Selected_number == 5:
@@ -475,9 +475,9 @@ def check(event):
             elif n == 6: #Uranus
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i < 3.1:
-                    V = -7.110 + 0.00009617 * i**2 + 0.0001045 * i**2+ 5 * log10(dist * PS_2**0.5)
+                    V = -7.110 + 0.00009617 * i**2 + 0.0001045 * i**2+ 5 * log10(dist * sqrt(PS_2))
                 else:
                     V = 5.6
                 if Selected_number == 6:
@@ -486,9 +486,9 @@ def check(event):
             elif n == 7: #Neptune
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i < 133:
-                    V = -7.00 + 0.007944 * i**3 + 0.00009617 * i**2+ 5 * log10(dist * PS_2**0.5)
+                    V = -7.00 + 0.007944 * i**3 + 0.00009617 * i**2+ 5 * log10(dist * sqrt(PS_2))
                 else:
                     V = 7.8
                 if Selected_number == 7:
@@ -500,10 +500,10 @@ def check(event):
                 G = planet[13]
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                a = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5))
+                a = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2)))
                 phi1 = exp(-3.33 * (tan(a/2))**0.63)
                 phi2 = exp(-1.87 * (tan(a/2))**1.22)
-                V = H - 2.5 * log10((1-G) * phi1 + G * phi2) + 5 * log10(dist * PS_2**0.5)
+                V = H - 2.5 * log10((1-G) * phi1 + G * phi2) + 5 * log10(dist * sqrt(PS_2))
                 Vlist[n] = V
                 if Selected_number == n:
                     Vtext = '\n\n' + str(round(V,1)) + ' 等'
@@ -1172,12 +1172,12 @@ def cal_Ellipse(planet, JD, X, Y, Z): #[T, a, e, ω, i, Ω, M0]
     node = (planet[5] + planet[11] * (JD - T) / 36525) * pi / 180 #Ω
     M0 = planet[6] * pi / 180
 
-    Ax = a *                 ( cos(peri)*cos(node) - sin(peri)*cos(i)*sin(node))
-    Bx = a * (1-e**2)**0.5 * (-sin(peri)*cos(node) - cos(peri)*cos(i)*sin(node))
-    Ay = a *                 ( sin(peri)*cos(i)*cos(node)*cose + cos(peri)*sin(node)*cose - sin(peri)*sin(i)*sine)
-    By = a * (1-e**2)**0.5 * ( cos(peri)*cos(i)*cos(node)*cose - sin(peri)*sin(node)*cose - cos(peri)*sin(i)*sine)
-    Az = a *                 ( sin(peri)*cos(i)*cos(node)*sine + cos(peri)*sin(node)*sine + sin(peri)*sin(i)*cose)
-    Bz = a * (1-e**2)**0.5 * ( cos(peri)*cos(i)*cos(node)*sine - sin(peri)*sin(node)*sine + cos(peri)*sin(i)*cose)
+    Ax = a *                ( cos(peri)*cos(node) - sin(peri)*cos(i)*sin(node))
+    Bx = a * sqrt(1-e**2) * (-sin(peri)*cos(node) - cos(peri)*cos(i)*sin(node))
+    Ay = a *                ( sin(peri)*cos(i)*cos(node)*cose + cos(peri)*sin(node)*cose - sin(peri)*sin(i)*sine)
+    By = a * sqrt(1-e**2) * ( cos(peri)*cos(i)*cos(node)*cose - sin(peri)*sin(node)*cose - cos(peri)*sin(i)*sine)
+    Az = a *                ( sin(peri)*cos(i)*cos(node)*sine + cos(peri)*sin(node)*sine + sin(peri)*sin(i)*cose)
+    Bz = a * sqrt(1-e**2) * ( cos(peri)*cos(i)*cos(node)*sine - sin(peri)*sin(node)*sine + cos(peri)*sin(i)*cose)
     
     n = 0.01720209895 / a**1.5 #平均日日運動(rad)
     M = (M0 + n * (JD - T)) % (2 * pi)
@@ -1197,9 +1197,9 @@ def cal_Ellipse(planet, JD, X, Y, Z): #[T, a, e, ω, i, Ω, M0]
     z = Az * cE_e + Bz * sE
     
     alpha = (atan2(y-Y, x-X) * 180/pi) % 360 #deg
-    delta = (atan((z-Z) / ((x-X)**2 + (y-Y)**2)**0.5)) * 180/pi#deg
+    delta = (atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2))) * 180/pi #deg
 
-    dist = ((x-X)**2 + (y-Y)**2 + (z-Z)**2)**0.5
+    dist = sqrt((x-X)**2 + (y-Y)**2 + (z-Z)**2)
 
     return x, y, z, alpha, delta, dist
 
@@ -1229,9 +1229,9 @@ def cal_Parabola(planet, JD, X, Y, Z): #[tp, q, e, ω, i, Ω, M0=0]
     z = Az * (1 - tanv2**2) + Bz * tanv2
     
     alpha = (atan2(y-Y, x-X) * 180/pi) % 360 #deg
-    delta = (atan((z-Z) / ((x-X)**2 + (y-Y)**2)**0.5)) * 180/pi#deg
+    delta = atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2)) * 180/pi#deg
 
-    dist = ((x-X)**2 + (y-Y)**2 + (z-Z)**2)**0.5
+    dist = sqrt((x-X)**2 + (y-Y)**2 + (z-Z)**2)
 
     return x, y, z, alpha, delta, dist
 
@@ -1270,14 +1270,14 @@ def cal_Hyperbola(planet, JD, X, Y, Z): #[tp, q, e, ω, i, Ω, M0=0]
     else:
         s = snew
 
-    x = Ax * (2*e - s - 1/s) + Bx * (e**2 - 1) * (s - 1/s)
-    y = Ay * (2*e - s - 1/s) + By * (e**2 - 1) * (s - 1/s)
-    z = Az * (2*e - s - 1/s) + Bz * (e**2 - 1) * (s - 1/s)
+    x = Ax * (2*e - s - 1/s) + Bx * sqrt(e**2 - 1) * (s - 1/s)
+    y = Ay * (2*e - s - 1/s) + By * sqrt(e**2 - 1) * (s - 1/s)
+    z = Az * (2*e - s - 1/s) + Bz * sqrt(e**2 - 1) * (s - 1/s)
     
     alpha = (atan2(y-Y, x-X) * 180/pi) % 360 #deg
-    delta = (atan((z-Z) / ((x-X)**2 + (y-Y)**2)**0.5)) * 180/pi#deg
+    delta = atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2)) * 180/pi #deg
 
-    dist = ((x-X)**2 + (y-Y)**2 + (z-Z)**2)**0.5
+    dist = sqrt((x-X)**2 + (y-Y)**2 + (z-Z)**2)
     
     return x, y, z, alpha, delta, dist
 
@@ -1303,17 +1303,17 @@ def calculate_Moon(JD, lat_obs, theta):
         E = newE
     
     xv = a * (cos(E) - e)
-    yv = a * (1 - e**2)**0.5 * sin(E)
+    yv = a * sqrt(1 - e**2) * sin(E)
 
     v = atan2(yv, xv)
-    dist = (xv**2 + yv**2)**0.5
+    dist = sqrt(xv**2 + yv**2)
     
     xh = dist * (cos(Nm) * cos(v+wm) - sin(Nm) * sin(v+wm) * cos(i))
     yh = dist * (sin(Nm) * cos(v+wm) + cos(Nm) * sin(v+wm) * cos(i))
     zh = dist * sin(v+wm) * sin(i)
     
     lon = atan2(yh, xh)
-    lat = atan2(zh, (xh**2 + yh**2)**0.5)
+    lat = atan2(zh, sqrt(xh**2 + yh**2))
     
     lon +=(- 1.274*sin(Mm - 2*D)
            + 0.658*sin(2*D)
@@ -1340,13 +1340,13 @@ def calculate_Moon(JD, lat_obs, theta):
     ye = -sin(lat) * sine + cos(lat) * sin(lon) * cose
     ze = sin(lat) * cose + cos(lat) * sin(lon) * sine
 
-    if Val2.get() == True:
+    if Val2.get():
         xe -= cos(lat_obs) * cos(theta) / dist
         ye -= cos(lat_obs) * sin(theta) / dist
         ze -= sin(lat_obs) / dist
         
-    alpha = (atan2(ye, xe) * 180/pi) % 360 #deg
-    delta = atan2(ze, (xe**2 + ye**2)**0.5) * 180/pi #deg
+    alpha = atan2(ye, xe) * 180/pi % 360 #deg
+    delta = atan2(ze, sqrt(xe**2 + ye**2)) * 180/pi #deg
     dist = dist * 6378.14
 
     return alpha, delta, dist, Ms, ws, lon, lat #deg, deg, km, rad瞬時, rad瞬時, radJ2000.0, radJ2000.0
