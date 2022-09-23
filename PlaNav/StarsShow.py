@@ -1,4 +1,4 @@
-#Planet Navigator (仮)
+#ソレイユ（Soleil）
 #Since 2021/8
 #programed by @Peteworden31416
 import matplotlib.pyplot as plt
@@ -79,7 +79,7 @@ def Eq_Ec(RA, Dec):  #deg
     b = sin(d) * sine + cos(d) * sin(r) * cose
     c = sin(d) * cose - cos(d) * sin(r) * sine
     EcLon = (atan2(b, a) * 180/pi) % 360
-    EcLat = atan(c / (a**2 + b**2) ** 0.5) * 180/pi
+    EcLat = atan(c / sqrt(a**2 + b**2)) * 180/pi
     return EcLon, EcLat  #deg
 
 def search(a): #はじめて赤経がaを超える行数（1始まり）を返す
@@ -167,7 +167,7 @@ def check(event):
     #地表ならその位置と恒星時
     lat_obs = 0 #VAl2.get()がFalseのとき用
     theta = 0
-    if Val2.get() == True:
+    if Val2.get():
         lat_obs = float(lat_Box.get()) * pi/180
         lon_obs = float(lon_Box.get()) * pi/180
         if lat_combo.get() == '南緯':
@@ -312,7 +312,7 @@ def check(event):
         fig = plt.figure('結果', figsize=(13, 6))
     else:
         fig = plt.figure('結果', figsize=(13, 6), facecolor="black")
-    fig.subplots_adjust(right=0.75)
+    fig.subplots_adjust(left=0.07, right=0.75)
 
     #広い方
     axW = fig.add_subplot(121, aspect=1)
@@ -420,7 +420,7 @@ def check(event):
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
                 i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
-                V = -0.613 + 0.06328*i - 0.0016336 * i**2 + 0.000033644 * i**3 - 3.4565*10**(-7) * i**4 +1.6893*10**(-9) * i**5 - 3.0334*10**(-12) * i**6+ 5 * log10(dist * PS_2**0.5)
+                V = -0.613 + 0.06328*i - 0.0016336 * i**2 + 0.000033644 * i**3 - 3.4565*10**(-7) * i**4 +1.6893*10**(-9) * i**5 - 3.0334*10**(-12) * i**6+ 5 * log10(dist * sqrt(PS_2))
                 Vlist[1] = V
                 if Selected_number == 1:
                     Vtext = '\n\n' + str(round(V,1)) + ' 等'
@@ -429,20 +429,20 @@ def check(event):
                 ES_2 = X**2 + Y**2 + Z**2
                 i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i <= 163.7:
-                    V = -4.384 - 0.001044 * i + 0.0003687 * i**2 - 2.814*10**(-6) * i**3 + 8.938*10**(-9) * i**4 + 5 * log10(dist * PS_2**0.5)
+                    V = -4.384 - 0.001044 * i + 0.0003687 * i**2 - 2.814*10**(-6) * i**3 + 8.938*10**(-9) * i**4 + 5 * log10(dist * sqrt(PS_2))
                 else:
-                    V = -4.384 + 240.44228 - 2.81914 * i + 0.00839034 * i**2 + 5 * log10(dist * PS_2**0.5)
+                    V = -4.384 + 240.44228 - 2.81914 * i + 0.00839034 * i**2 + 5 * log10(dist * sqrt(PS_2))
                 if Selected_number == 2:
                     Vtext = '\n\n' + str(round(V,1)) + ' 等'
                 Vlist[2] = V
             elif n == 3: #Mars
                 PS_2 = x**2 + y**2 + z**2
                 ES_2 = X**2 + Y**2 + Z**2
-                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * (PS_2)**0.5)) * 180/ pi
+                i = acos((PS_2 + dist**2 - ES_2) / (2 * dist * sqrt(PS_2))) * 180/ pi
                 if i <= 50:
-                    V = -1.601 + 0.002267 * i - 0.0001302 * i**2 + 5 * log10(dist * PS_2**0.5)
+                    V = -1.601 + 0.002267 * i - 0.0001302 * i**2 + 5 * log10(dist * sqrt(PS_2))
                 elif 50 < i <= 120:
-                    V = -1.601 + 1.234 - 0.02573 * i + 0.0003445 * i**2 + 5 * log10(dist * PS_2**0.5)
+                    V = -1.601 + 1.234 - 0.02573 * i + 0.0003445 * i**2 + 5 * log10(dist * sqrt(PS_2))
                 else:
                     V = 1
                 if Selected_number == 3:
@@ -682,7 +682,6 @@ def check(event):
         
 def addplanetsheet(event):
     def addplanet(event):
-        global combobox, comboText
         Name = name_box.get()
         
         s_eles = []
@@ -749,7 +748,6 @@ def addplanetsheet(event):
         combobox.place(x=150, y=130)
 
         root2.destroy()
-        root.mainloop()
         
     def SBDBset(R):
         r = json.loads(R)
@@ -1059,7 +1057,7 @@ lat_combo = ttk.Combobox(root, textvariable=tk.StringVar(), values=NorS, width=5
 lat_combo.set('北緯')
 lat_combo.place(x=140, y=230)
 lat_Box = tk.Entry(root, width=7)
-lat_Box.insert(tk.END, '36')
+lat_Box.insert(tk.END, '35')
 lat_Box.place(x=200, y=230)
 lat_d = tk.Label(root, text='°', width=2)
 lat_d.place(x=230, y=230)
@@ -1071,7 +1069,7 @@ lon_combo = ttk.Combobox(root, textvariable=tk.StringVar(), values=EorW, width=5
 lon_combo.set('東経')
 lon_combo.place(x=140, y=250)
 lon_Box = tk.Entry(root, width=7)
-lon_Box.insert(tk.END, '140')
+lon_Box.insert(tk.END, '135')
 lon_Box.place(x=200, y=250)
 lon_d = tk.Label(root, text='°', width=2)
 lon_d.place(x=230, y=250)
@@ -1197,7 +1195,7 @@ def cal_Ellipse(planet, JD, X, Y, Z): #[T, a, e, ω, i, Ω, M0]
     z = Az * cE_e + Bz * sE
     
     alpha = (atan2(y-Y, x-X) * 180/pi) % 360 #deg
-    delta = (atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2))) * 180/pi #deg
+    delta = atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2)) * 180/pi#deg
 
     dist = sqrt((x-X)**2 + (y-Y)**2 + (z-Z)**2)
 
@@ -1275,7 +1273,7 @@ def cal_Hyperbola(planet, JD, X, Y, Z): #[tp, q, e, ω, i, Ω, M0=0]
     z = Az * (2*e - s - 1/s) + Bz * sqrt(e**2 - 1) * (s - 1/s)
     
     alpha = (atan2(y-Y, x-X) * 180/pi) % 360 #deg
-    delta = atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2)) * 180/pi #deg
+    delta = atan((z-Z) / sqrt((x-X)**2 + (y-Y)**2)) * 180/pi#deg
 
     dist = sqrt((x-X)**2 + (y-Y)**2 + (z-Z)**2)
     
@@ -1345,7 +1343,7 @@ def calculate_Moon(JD, lat_obs, theta):
         ye -= cos(lat_obs) * sin(theta) / dist
         ze -= sin(lat_obs) / dist
         
-    alpha = atan2(ye, xe) * 180/pi % 360 #deg
+    alpha = (atan2(ye, xe) * 180/pi) % 360 #deg
     delta = atan2(ze, sqrt(xe**2 + ye**2)) * 180/pi #deg
     dist = dist * 6378.14
 
