@@ -620,13 +620,13 @@ def check(event):
             
     for n in range(len(planets)):
         if n == 0:
-            if abs(RAadjust(RA_Sun, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Sun - piccenDec) <= rgW:
+            if abs(RAadjust(RA_Sun, piccenRA) - piccenRA) <= rg and abs(Dec_Sun - piccenDec) <= rg:
                 R = 0.267 / Distlist[0]
                 SUNcir = patches.Circle((RAadjust(RA_Sun, piccenRA), Dec_Sun), R, fc='yellow')
                 ax.add_patch(SUNcir)
                 ax.text(RAadjust(RA_Sun-0.2, piccenRA), Dec_Sun+0.2, '太陽', c=textclr, fontname='MS Gothic')
         elif n == 8:
-            if abs(RAadjust(RA_Moon, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Moon - piccenDec) <= rgW:
+            if abs(RAadjust(RA_Moon, piccenRA) - piccenRA) <= rg and abs(Dec_Moon - piccenDec) <= rg:
                 r = 0.259 / (dist_Moon / 384400)
                 cir = patches.Circle((RAadjust(RA_Moon, piccenRA), Dec_Moon), r, fc='#ffff33')
                 ax.add_patch(cir)
@@ -642,7 +642,7 @@ def check(event):
                     ax.add_patch(eli)
                 ax.text(RAadjust(RA_Moon-0.2, piccenRA), Dec_Moon+0.2, '月', c=textclr, fontname='MS Gothic')
         else:
-            if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rgW  and abs(Declist[n] - piccenDec) <= rgW:
+            if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rg and abs(Declist[n] - piccenDec) <= rg:
                 if mag_0 - step*Vlist[n] < 1:   #サイズ
                     size = 1
                 else:
