@@ -96,7 +96,7 @@ def search(a): #はじめて赤経がaを超える行数（1始まり）を返�
 
 def search2(a): #はじめて赤経がaを超える行数（0始まり）を返す
     if float(F2[StarNum1_3-1].split()[0]) < a:
-        n =  StarNum1_3 + 1
+        n =  StarNum1_3
     else:
         for n in range(0, StarNum1_3):
             if float(F2[n].split()[0]) >= a:
