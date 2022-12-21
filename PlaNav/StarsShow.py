@@ -128,6 +128,12 @@ def check(event):
             size = round((mag_0 - step*sd[2])**2)
             ax.scatter(sd[0] + a, sd[1], c=starclr, s=size)
 
+	def DrawStarsHIPforNarrow(i, a):
+        sd = list(map(float, FFF[i].split()))
+        if sd[2] <= Max_m and abs(sd[1] - piccenDec) <= rg:
+            size = round((mag_0 - step*sd[2])**2)
+            ax.scatter(sd[0] + a, sd[1], c=starclr, s=size)
+
     def DrawStarsW(i, a):
         sd = list(map(float, FFF[i].split()))
         if sd[2] <= Max_mW and abs(sd[1] - piccenDec) <= rgW:
@@ -592,6 +598,10 @@ def check(event):
     Max_m = float(MaxM_Box.get())
 
     if piccenRA - rg < 0:   #恒星
+		for i in range(0, searchW(piccenRA + rg)):
+            DrawStarsHIPforNarrow(i, 0)
+        for i in range(searchW(piccenRA - rg + 360), 8874):
+            DrawStarsHIPforNarrow(i, -360)
         for i in range(1, search(piccenRA + rg)):
             DrawStars(i, 0)
         for i in range(search(piccenRA - rg + 360), 326882):
@@ -603,6 +613,10 @@ def check(event):
 
         
     elif piccenRA + rg >= 360:
+		for i in range(searchW(piccenRA - rg), 8874):
+            DrawStarsHIPforNarrow(i, 0)
+        for i in range(0, searchW(piccenRA - rg + 360)):
+            DrawStarsHIPforNarrow(i, 360)
         for i in range(search(piccenRA - rg), 326882):
             DrawStars(i, 0)
         for i in range(1, search(piccenRA + rg - 360)):
@@ -613,6 +627,8 @@ def check(event):
             DrawStars2(i, 360)
                     
     else:
+		for i in range(searchW(piccenRA - rg), searchW(piccenRA + rg)):
+            DrawStarsHIPforNarrow(i, 0)
         for i in range(search(piccenRA - rg), search(piccenRA + rg)):
             DrawStars(i, 0)
         for i in range(search2(piccenRA - rg), search2(piccenRA + rg)):
