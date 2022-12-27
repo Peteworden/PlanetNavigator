@@ -1,6 +1,6 @@
 #ソレイユ（Soleil）
 #Since 2021/8
-#programed by @Peteworden31416
+#programmed by ぴーとうぉーでん@Peteworden31416
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
@@ -82,7 +82,7 @@ def Eq_Ec(RA, Dec):  #deg
     EcLat = atan(c / sqrt(a**2 + b**2)) * 180/pi
     return EcLon, EcLat  #deg
 
-def search(a): #はじめて赤経がaを超える行数（1始まり）を返す
+def search(a): #はじめて赤経がaを超える行数（1始まり!!!）を返す
     st = int(FHelp[floor(a * 10)])
     go = int(FHelp[floor(a * 10) + 1]) - 1
     if float(linecache.getline('StarsNew-Tycho-to10.txt', go).split()[0]) < a:
@@ -115,30 +115,54 @@ def searchW(a): #はじめて赤経がaを超える行数（0始まり）を返�
 def check(event):
     plt.close()
     ButtonText.set('エラー')
+
+    def DrawStarsW(start, end, a):
+        RAs = []
+        Decs = []
+        sizes = []
+        for i in range(start, end):
+            sd = list(map(float, FFF[i].split()))
+            if sd[2] <= Max_mW and abs(sd[1] - piccenDec) <= rgW:
+                RAs.append(sd[0] + a)
+                Decs.append(sd[1])
+                sizes.append(round((mag_0W - stepW*sd[2])**2))
+        axW.scatter(RAs, Decs, c=starclr, s=sizes)
+
+    def DrawStarsHIPforNarrow(start, end, a):
+        RAs = []
+        Decs = []
+        sizes = []
+        for i in range(start, end):
+            sd = list(map(float, FFF[i].split()))
+            if sd[2] <= Max_m and abs(sd[1] - piccenDec) <= rg:
+                RAs.append(sd[0] + a)
+                Decs.append(sd[1])
+                sizes.append(round((mag_0 - step*sd[2])**2))
+        ax.scatter(RAs, Decs, c=starclr, s=sizes)
     
-    def DrawStars(i, a):
-        [RA, Dec, mag] = list(map(float, linecache.getline('StarsNew-Tycho-to10.txt', i).split())) #[RA, Dec, mag]
-        if mag <= Max_m and abs(Dec - piccenDec) <= rg:
-            size = round((mag_0 - step*mag)**2)
-            ax.scatter(RA + a, Dec, c=starclr, s=size)
+    def DrawStars(start, end, a):
+        RAs = []
+        Decs = []
+        sizes = []
+        for i in range(start, end):
+            [RA, Dec, mag] = list(map(float, linecache.getline('StarsNew-Tycho-to10.txt', i).split()))
+            if mag <= Max_m and abs(Dec - piccenDec) <= rg:
+                RAs.append(RA + a)
+                Decs.append(Dec)
+                sizes.append(round((mag_0 - step*mag)**2))
+        ax.scatter(RAs, Decs, c=starclr, s=sizes)
 
-    def DrawStars2(i, a):
-        sd = list(map(float, F2[i].split()))
-        if sd[2] <= Max_m and abs(sd[1] - piccenDec) <= rg:
-            size = round((mag_0 - step*sd[2])**2)
-            ax.scatter(sd[0] + a, sd[1], c=starclr, s=size)
-
-	def DrawStarsHIPforNarrow(i, a):
-        sd = list(map(float, FFF[i].split()))
-        if sd[2] <= Max_m and abs(sd[1] - piccenDec) <= rg:
-            size = round((mag_0 - step*sd[2])**2)
-            ax.scatter(sd[0] + a, sd[1], c=starclr, s=size)
-
-    def DrawStarsW(i, a):
-        sd = list(map(float, FFF[i].split()))
-        if sd[2] <= Max_mW and abs(sd[1] - piccenDec) <= rgW:
-            size = round((mag_0W - stepW*sd[2])**2)
-            axW.scatter(sd[0] + a, sd[1], c=starclr, s=size)
+    def DrawStars2(start, end, a):
+        RAs = []
+        Decs = []
+        sizes = []
+        for i in range(start, end):
+            sd = list(map(float, F2[i].split()))
+            if sd[2] <= Max_m and abs(sd[1] - piccenDec) <= rg:
+                RAs.append(sd[0] + a)
+                Decs.append(sd[1])
+                sizes.append(round((mag_0 - step*sd[2])**2))
+        ax.scatter(RAs, Decs, c=starclr, s=sizes)
 
     def RAadjust(RA, piccenRA):
         return piccenRA + (RA - piccenRA + 180) % 360 - 180
@@ -395,20 +419,15 @@ def check(event):
 
     #恒星
     if piccenRA - rgW < 0:
-        for i in range(0, searchW(piccenRA + rgW)):
-            DrawStarsW(i, 0)
-        for i in range(searchW(piccenRA - rgW + 360), 8874):
-            DrawStarsW(i, -360)
+        DrawStarsW(0, searchW(piccenRA + rgW), 0)
+        DrawStarsW(searchW(piccenRA - rgW + 360), 8874, -360)
         
     elif piccenRA + rgW >= 360:
-        for i in range(searchW(piccenRA - rgW), 8874):
-            DrawStarsW(i, 0)
-        for i in range(0, searchW(piccenRA + rgW - 360)):
-            DrawStarsW(i, 360)
+        DrawStarsW(searchW(piccenRA - rgW), 8874, 0)
+        DrawStarsW(0, searchW(piccenRA + rgW - 360), 360)
                     
     else:
-        for i in range(searchW(piccenRA - rgW), searchW(piccenRA + rgW)):
-            DrawStarsW(i, 0)
+        DrawStarsW(searchW(piccenRA - rgW), searchW(piccenRA + rgW), 0)
 
     #枠内なら明るさを計算して表示
     Vtext = ''
@@ -553,14 +572,20 @@ def check(event):
 
     if Val3.get() and Selected_number != 0 and Selected_number != 8:
         planet = planets[Selected_number]
+        RAs = []
+        Decs = []
         for iv in np.arange(float(moveW_on_Box1.get()), float(moveW_on_Box2.get())+0.001, float(moveW_on_Box1.get())):
             X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
             x, y, z, RA, Dec, dist = calc(planet, JD+iv, X, Y, Z)
-            axW.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
-
+            RAs.append(RAadjust(RA, piccenRA))
+            Decs.append(Dec)
+            
             X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
             x, y, z, RA, Dec, dist = calc(planet, JD-iv, X, Y, Z)
-            axW.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
+            RAs.append(RAadjust(RA, piccenRA))
+            Decs.append(Dec)
+            
+        axW.scatter(RAs, Decs, c='#00FF00', s=1)
 
     #狭い方の枠
     axW.plot([piccenRA + rg, piccenRA + rg], [piccenDec + rg, piccenDec - rg], c=frameclr, lw=1)
@@ -598,51 +623,40 @@ def check(event):
     Max_m = float(MaxM_Box.get())
 
     if piccenRA - rg < 0:   #恒星
-		for i in range(0, searchW(piccenRA + rg)):
-            DrawStarsHIPforNarrow(i, 0)
-        for i in range(searchW(piccenRA - rg + 360), 8874):
-            DrawStarsHIPforNarrow(i, -360)
-        for i in range(1, search(piccenRA + rg)):
-            DrawStars(i, 0)
-        for i in range(search(piccenRA - rg + 360), 326882):
-            DrawStars(i, -360)
-        for i in range(0, search2(piccenRA + rg)):
-            DrawStars2(i, 0)
-        for i in range(search2(piccenRA - rg + 360), StarNum1_3):
-            DrawStars2(i, -360)
+        DrawStarsHIPforNarrow(0, searchW(piccenRA + rg), 0)
+        DrawStarsHIPforNarrow(searchW(piccenRA - rg + 360), 8874, -360)
+        
+        DrawStars(1, search(piccenRA + rg), 0)
+        DrawStars(search(piccenRA - rg + 360), 326882, -360)
+        
+        DrawStars2(0, search2(piccenRA + rg), 0)
+        DrawStars2(search2(piccenRA - rg + 360), StarNum1_3, -360)
 
         
     elif piccenRA + rg >= 360:
-		for i in range(searchW(piccenRA - rg), 8874):
-            DrawStarsHIPforNarrow(i, 0)
-        for i in range(0, searchW(piccenRA - rg + 360)):
-            DrawStarsHIPforNarrow(i, 360)
-        for i in range(search(piccenRA - rg), 326882):
-            DrawStars(i, 0)
-        for i in range(1, search(piccenRA + rg - 360)):
-            DrawStars(i, 360)
-        for i in range(search2(piccenRA - rg), StarNum1_3):
-            DrawStars2(i, 0)
-        for i in range(0, search2(piccenRA + rg - 360)):
-            DrawStars2(i, 360)
+        DrawStarsHIPforNarrow(searchW(piccenRA - rg), 8874, 0)
+        DrawStarsHIPforNarrow(0, searchW(piccenRA - rg + 360), 360)
+        
+        DrawStars(search(piccenRA - rg), 326882, 0)
+        DrawStars(1, search(piccenRA + rg - 360), 360)
+        
+        DrawStars2(search2(piccenRA - rg), StarNum1_3, 0)
+        DrawStars2(0, search2(piccenRA + rg - 360), 360)
                     
     else:
-		for i in range(searchW(piccenRA - rg), searchW(piccenRA + rg)):
-            DrawStarsHIPforNarrow(i, 0)
-        for i in range(search(piccenRA - rg), search(piccenRA + rg)):
-            DrawStars(i, 0)
-        for i in range(search2(piccenRA - rg), search2(piccenRA + rg)):
-            DrawStars2(i, 0)
+        DrawStarsHIPforNarrow(searchW(piccenRA - rg), searchW(piccenRA + rg), 0)
+        DrawStars(search(piccenRA - rg), search(piccenRA + rg), 0)
+        DrawStars2(search2(piccenRA - rg), search2(piccenRA + rg), 0)
             
     for n in range(len(planets)):
         if n == 0:
-            if abs(RAadjust(RA_Sun, piccenRA) - piccenRA) <= rg and abs(Dec_Sun - piccenDec) <= rg:
+            if abs(RAadjust(RA_Sun, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Sun - piccenDec) <= rgW:
                 R = 0.267 / Distlist[0]
                 SUNcir = patches.Circle((RAadjust(RA_Sun, piccenRA), Dec_Sun), R, fc='yellow')
                 ax.add_patch(SUNcir)
                 ax.text(RAadjust(RA_Sun-0.2, piccenRA), Dec_Sun+0.2, '太陽', c=textclr, fontname='MS Gothic')
         elif n == 8:
-            if abs(RAadjust(RA_Moon, piccenRA) - piccenRA) <= rg and abs(Dec_Moon - piccenDec) <= rg:
+            if abs(RAadjust(RA_Moon, piccenRA) -   piccenRA) <= rgW  and abs(Dec_Moon - piccenDec) <= rgW:
                 r = 0.259 / (dist_Moon / 384400)
                 cir = patches.Circle((RAadjust(RA_Moon, piccenRA), Dec_Moon), r, fc='#ffff33')
                 ax.add_patch(cir)
@@ -658,7 +672,7 @@ def check(event):
                     ax.add_patch(eli)
                 ax.text(RAadjust(RA_Moon-0.2, piccenRA), Dec_Moon+0.2, '月', c=textclr, fontname='MS Gothic')
         else:
-            if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rg and abs(Declist[n] - piccenDec) <= rg:
+            if abs(RAadjust(RAlist[n], piccenRA) -   piccenRA) <= rgW  and abs(Declist[n] - piccenDec) <= rgW:
                 if mag_0 - step*Vlist[n] < 1:   #サイズ
                     size = 1
                 else:
@@ -668,14 +682,20 @@ def check(event):
 
     if Val3.get() and Selected_number != 0 and Selected_number != 8:
         planet = planets[Selected_number]
+        RAs = []
+        Decs = []
         for iv in np.arange(float(move_on_Box1.get()), float(move_on_Box2.get())+0.001, float(move_on_Box1.get())):
             X, Y, Z, a, b, c = cal_Ellipse(Earth, JD+iv, 0, 0, 0)
             x, y, z, RA, Dec, dist = calc(planet, JD+iv, X, Y, Z)
-            ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
+            RAs.append(RAadjust(RA, piccenRA))
+            Decs.append(Dec)
 
             X, Y, Z, a, b, c = cal_Ellipse(Earth, JD-iv, 0, 0, 0)
             x, y, z, RA, Dec, dist = calc(planet, JD-iv, X, Y, Z)
-            ax.scatter(RAadjust(RA, piccenRA), Dec, c='#00FF00', s=1)
+            RAs.append(RAadjust(RA, piccenRA))
+            Decs.append(Dec)
+            
+        ax.scatter(RAs, Decs, c='#00FF00', s=1)
                 
     text = time_str + '\n\n' + Name + '\n\n' + alpha_str + delta_str + '    (J2000.0)\n\n' + dist_str + '\n\n' + Const + '座' + Vtext + Astr + hstr
     if screenblack == 0:
@@ -691,8 +711,8 @@ def check(event):
     fig.show()
 
     if SaveOrNot.get():
-        splitHour = str(float(Hour))
-        strHour = splitHour[0].zfill(2) + '_' + splitHour[1]
+        if Hour - floor(Hour) != 0:
+            strHour = str(int(Hour)).zfill(2) + '_' + strHour.split('.')[1]
         filename = strYear.zfill(4) + strMonth.zfill(2) + strDay.zfill(2) + strHour + Name.replace(' ', '').replace('/', '') + ".png"
         fig.savefig(filename)
         
@@ -1073,7 +1093,7 @@ lat_combo = ttk.Combobox(root, textvariable=tk.StringVar(), values=NorS, width=5
 lat_combo.set('北緯')
 lat_combo.place(x=140, y=230)
 lat_Box = tk.Entry(root, width=7)
-lat_Box.insert(tk.END, '35')
+lat_Box.insert(tk.END, '40')
 lat_Box.place(x=200, y=230)
 lat_d = tk.Label(root, text='°', width=2)
 lat_d.place(x=230, y=230)
@@ -1085,7 +1105,7 @@ lon_combo = ttk.Combobox(root, textvariable=tk.StringVar(), values=EorW, width=5
 lon_combo.set('東経')
 lon_combo.place(x=140, y=250)
 lon_Box = tk.Entry(root, width=7)
-lon_Box.insert(tk.END, '135')
+lon_Box.insert(tk.END, '140')
 lon_Box.place(x=200, y=250)
 lon_d = tk.Label(root, text='°', width=2)
 lon_d.place(x=230, y=250)
